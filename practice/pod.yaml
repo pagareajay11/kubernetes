@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: testnswebserver
+  labels:
+    app: myapp
+spec:
+  containers:
+    - name: my-app-container
+      image: coolgourav147/nginx-custom
+      imagePullPolicy: Never
+      resources:
+        requests:
+          memory: 1Mi
+        limits:
+          memory: 200Mi
+#curl students-app.default.svc.cluster.local

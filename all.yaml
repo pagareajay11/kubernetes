@@ -1,0 +1,256 @@
+apiVersion: v1
+kind: Pod
+metadata:
+    name: myfirstpod
+    labels: 
+       env: prod
+spec:
+  containers:
+    - name : containername
+      image : nginx
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+    name: myfirstpod
+    labels: 
+       env: prod
+spec:
+  containers:
+    - name : firstcontainer
+      image : nginx
+      env:
+        - name: myname
+          value: ajay
+        - name: city
+          value: abad
+    - name : secondc
+      image : nginx
+      env:
+        - name: myname
+          value: ajay
+        - name: city
+          value: abad
+  initContainers:
+    - name : initcontainer
+      image : nginx
+      env:
+        - name: myname
+          value: ajay
+        - name: city
+          value: abad
+      args: ["sleep" ,"10"]
+
+
+
+Replication Controller
+
+
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: firstrc
+  labels:
+    appname: votingapp
+
+spec:
+  replicas: 3
+  template:
+    metadata:
+      name: secondpod
+      labels: 
+        type: app
+    spec:
+      containers:
+        - image: nginx
+          name: c1
+
+
+Replica Set
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend
+  labels:
+    app: guestbook
+    tier: frontend
+spec:
+  # modify replicas according to your case
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: php-redis
+        image: gcr.io/google_samples/gb-frontend:v3
+
+
+Deployment
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+
+kubectl set image deployment/nginx-deployment nginx=nginx:1.16.1
+kubectl rollout status deployment/nginx-deployment
+kubectl rollout history deployment/nginx-deployment --revision=2
+kubectl rollout undo deployment/nginx-deployment
+
+Service
+
+kind: Service
+metadata:
+  name: myfsvc1
+  labels:
+    servicelbl: labelname
+
+spec:
+  type: NodePort
+  ports:
+    - nodePort: 31000
+      port: 9000
+      targetPort: 80
+  selector:
+    type: app
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  selector:
+    app: MyApp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9376
+  clusterIP: 10.0.171.239
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+    - ip: 192.0.2.127
+
+
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-user
+data:
+  username: dGVzdHVzZXI=
+  password: dGVzdHVzZXJAMTIz
+
+
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+   name: db-config
+data:
+  host: mysql
+  name: test
+
+
+
+Ingress
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: static-web-deployment
+  namespace: sample
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: days-app
+    spec:
+      containers:
+      - name: days-app-container
+        image: vagdevik/my-first-app-image:1.1
+        ports:
+        - containerPort: 80
+  selector:
+    matchLabels:
+      app: days-app
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: static-web-service
+  namespace: sample
+spec:
+  ports:
+    - port: 80
+  selector:
+    app: days-app
+
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: days-app-ingress
+  namespace: sample
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: minikube-example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: static-web-service
+                port:
+                  number: 80
+    
+
+DaemonSets
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: dset
+spec:
+  selector:
+    matchLabels:
+      name: all-pods
+  template:
+    metadata:
+      labels:
+        name: all-pods
+    spec:
+      containers:
+        - name: c1
+          image: nginx
+

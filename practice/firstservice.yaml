@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: myfsvc1
+  labels:
+    #servicelbl: labelname
+    app: myapp
+spec:
+  #type: NodePort
+  ports:
+   # - nodePort: 31000
+     - port: 9000
+       targetPort: 80
+  selector:
+    type: app

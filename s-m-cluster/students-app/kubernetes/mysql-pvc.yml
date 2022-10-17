@@ -1,0 +1,16 @@
+---
+# Define a 'Persistent Volume Claim'(PVC) for Mysql Storage, dynamically provisioned by cluster
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim
+  labels:
+    app: mysql
+    tier: database
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce   
+  resources:
+    requests:
+      storage: 1Gi  

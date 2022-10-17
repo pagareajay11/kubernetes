@@ -1,0 +1,3 @@
+URL : https://10.0.88.255/vsphere-client/?csp
+Creds: Administrator@vc.Infra  /  gsL@B!234IQ
+4CPU, 8GB RAM. 100GB HD
